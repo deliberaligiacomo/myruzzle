@@ -1,5 +1,5 @@
-De Liberali Giacomo
+[De Liberali Giacomo - deliberali.giacomo@gmail.com]
 
-Progetto finale del Corso di Programmazione - Unive, anno scolastico 2015/2016
+Final project of the Programming Course - Unive, 2015/2016
 
-Per maggiori informazioni controlla: /progetto.pdf
+For more infos check /progetto.pdf
