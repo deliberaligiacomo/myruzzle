@@ -5,19 +5,27 @@
 #include "setting.h"
 
 int parse_schema(char *schema_path, int *dim, char ***field, char ***scores) {
+    /* the stream rappresenting the file indicated in path [read only]*/
     FILE *file = fopen(schema_path, "r");
 
     if (!file) {
-        printf("Errore apertura file. [file_parser.17]");
+        printf("Errore opening the file. [file_parser.11]");
         return STATUS_FAIL;
     } else {
+        /* rappresents the current scanning char */
         char current_char;
+        /* equal to 0 until the first file scanf */
         int i = 0;
+        /* when a line is parsed */
         int end_line = 0;
+        /* needed to get the dim from the char (atoi) */
         char cnv[2];
+        /* the row and column indexes */
         int row, column;
+        /* indicates if the playing matrix is finished and begin scores matrix */
         int field_ended = 0;
 
+        /* loop to get the dim from the file */
         while (fscanf(file, "%c", &current_char) && !(*dim)) {
             if (current_char != NEW_LINE && current_char != SPACE) {
                 cnv[0] = current_char;
@@ -25,80 +33,93 @@ int parse_schema(char *schema_path, int *dim, char ***field, char ***scores) {
                 *dim = atoi(cnv);
             }
         }
+        /* close the file to report the pointer to the file start */
         fclose(file);        
         
+        /* bring the pointer to the file start */
         file = fopen(schema_path, "r");
 
-
+        /* allocates in the heap the matrixes */
         *field = init_char_matrix(*dim);
         *scores = init_char_matrix(*dim);
 
-
-        i = 0;
         row = -1;
         column = 0;
         while (fscanf(file, "%c", &current_char) && !feof(file)) {
             if (current_char != NEW_LINE && current_char != SPACE) {
                 if (i != 0) {
                     /* dimension already found, begin chars */
+                    
+                    /* if !filed_ended the playing matrix is finisced and begins the scores one */
                     if (!field_ended) {
                         (*field)[row][column] = current_char;
                     } else {
                         (*scores)[row][column] = current_char;
                     }
                     column++;
+                    
+                    /* columns go form 0 to dim-1*/
                     column = column % (*dim);
                 }
-                if (end_line % 4 == 0) {
+                if (end_line % (*dim) == 0) { /* % 4 before change */
                     /* line ended */
                     row++;
+                    /* rows go from 0 to dim-1 */
                     row = row % (*dim);
                 }
+                /* the matrix are sqared (same rows and cols),
+                 so when end_line reach dim*dim the first matrix is finisced */
                 if (end_line == (*dim) * (*dim)) {
-                    /* field ended, begin setting (score) */
+                    /* field ended, begin setting (scores) */
                     field_ended = 1;
                 }
                 end_line++;
+                
+                /* i'm not anymore in the first cycle */
                 i++;
             }
         }
+        /* close the file */
         fclose(file);
         return STATUS_SUCCESS;
     }
 }
 
 int loop_dictionary(char *path, char *output, char **field, char **scores, int dim, List *moves) {
+    /* the stream rappresenting the dictionary file indicated in path [read only]*/
     FILE *file = fopen(path, "r");
+    /* the current word (suppose max length 100 chars)*/
     char cword[100];
+    /* indicates if the current word is present in the matrix */
     int present;
+    /* rappresent the current word score */
     int cword_score;
 
-    /* to clean the previus version of the output file */
+    /* to clean the previus version of the output file [write, NOT append]*/
     FILE *file_out = fopen(output, "w");
     fclose(file_out);
 
-
+    /* if the stream is valid (not null)*/
     if (file)
+        /* while the file is not finished */
         while (fscanf(file, "%s", cword) && !feof(file)) {
+            /* upcase current word */
             upcase(cword);
-
+            /* check if it's present */
             present = find_word(field, scores, cword, dim, &(*moves));
-
-
-            if (present) {
-                cword_score = get_word_score(*moves, scores);
-                /*printf("\nCurrentWord: %s,[%d] present: %d", cword, cword_score, present);*/
-                /*printf("\npath: ");*/
-                save_on_file(output, *moves, scores);
-                /*print_list(*moves);*/
-            }/*else
-                printf("\nWord: %s not present", cword);
             
-            printf("\n");*/
+            if (present) {
+                /* get current word score */
+                cword_score = get_word_score(*moves, scores);
+                /* since the current word is present in the matrix, save it in the output file */
+                save_on_file(output, *moves, scores);
+            }
+            
+            /* clean the moves list*/
             free_list(&(*moves));
             *moves = NULL;
         }
-
+    /* close the output file to prevent errors */
     fclose(file);
     return STATUS_SUCCESS;
 }

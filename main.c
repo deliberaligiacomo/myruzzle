@@ -27,13 +27,14 @@ int main(int argc, char *argv[]) {
         schema = argv[2];
         output = argv[3];
 
+        /* fill vars schema, dim, field and scores */
         if (parse_schema(schema, &dim, &field, &scores)) {
             loop_dictionary(dictionary, output, field, scores, dim, &l);
             printf("Playground:\n");
             print_char_matrix(field, dim);
             printf("\nOutput file saved successfully!\n");
         } else
-            printf("\nSomething went wrong parsing the schema!\n");
+            printf("\nSomething went wrong while parsing the schema!\n");
     } else if (argc == MODE_INTERACTIVE) {
         /* the playing field */
         char **field;
@@ -62,6 +63,7 @@ int main(int argc, char *argv[]) {
         field = init_char_matrix(dim);
         scores = init_char_matrix(dim);
 
+        /* loop though the matrix field to ask values */
         for (row = 0; row < dim; row++) {
             for (column = 0; column < dim; column++) {
                 printf("Insert letter [%d][%d]: ", row, column);
@@ -77,6 +79,7 @@ int main(int argc, char *argv[]) {
         print_char_matrix(field, dim);
 
         printf("--------------\nNow type bonus matrix:\n");
+        /* loop trough the scores matrix and ask score for each cell */
         for (row = 0; row < dim; row++) {
             for (column = 0; column < dim; column++) {
                 printf("Insert bonus for %c [%d][%d]: ", field[row][column], row, column);
@@ -96,17 +99,16 @@ int main(int argc, char *argv[]) {
         printf("--------------\nThe bonus matrix you just created is:\n");
         print_char_matrix(scores, dim);
         printf("--------------\n");
+        
+        /* while the users insert valid words, continue */
         while (continua) {
             printf("Insert a word to check [type 0 to end]: ");
             scanf("%s", cword);
 
+            /* if the typed word differ "0" */
             if (strcmp(cword, "0") != 0) {
-
                 upcase(cword);
-
                 present = find_word(field, scores, cword, dim, &moves);
-
-
                 if (present) {
                     cword_score = get_word_score(moves, scores);
                     printf("Word %s present with score %d\n", cword, cword_score);
@@ -115,11 +117,11 @@ int main(int argc, char *argv[]) {
                 } else
                     printf("%s: not present\n\n", cword);
             } else
+                /* the user typed "0", stop asking words */
                 continua = 0;
         }
-
-
     } else {
+        /* the given parameters are not correct (validity only checks pars number) */
         printf("Usage: /ruzzle [<dizionario> <schema> <output>]\n");
     }
 
