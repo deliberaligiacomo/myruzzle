@@ -1,6 +1,6 @@
 #include<stdlib.h>
 #include<stdio.h>
-
+#include<string.h>
 #include "setting.h"
 
 int get_letter_score(char letter) {
@@ -84,7 +84,7 @@ int prepend(List *l, int row, int col, char extra, char letter) {
 
 void print_list(List l) {
     if (l) {
-        if(l->next==NULL)
+        if (l->next == NULL)
             printf("(%d,%d)\n\n", l->row, l->col);
         else
             printf("(%d,%d)-->", l->row, l->col);
@@ -108,7 +108,7 @@ void free_list(List list) {
     }
 }
 
-int get_word_score(List l, char **scores) {
+int get_word_score(List l) {
     int double_word = 1;
     int triple_word = 1;
 
@@ -150,7 +150,7 @@ int save_on_file(char* output_path, List l, char **scores) {
         printf("Errore apertura file. [list.174]\n");
     } else {
         if (l)
-            score = get_word_score(l, scores);
+            score = get_word_score(l);
 
         while (l) {
             fprintf(file, "%c", l->letter);
@@ -172,4 +172,79 @@ int save_on_file(char* output_path, List l, char **scores) {
     fclose(file);
 
     return STATUS_SUCCESS;
+}
+
+int get_size(List l) {
+    if (l)
+        return 1 + get_size(l->next);
+    else
+        return 0;
+}
+
+int prepend_wlist(WList *words_list, List current_word_list) {
+    char *str;
+    List pc = current_word_list;
+    int i = 0;
+    int size = get_size(current_word_list);
+    
+    str = (char*) malloc(sizeof (char)*size);
+    while (pc) {
+        str[i] = pc->letter;
+        pc = pc->next;
+        i++;
+    }
+    str[i] = '\0';
+
+    WList nuova_cella = (WList) malloc(sizeof (struct wnode));
+    if (nuova_cella) {
+        nuova_cella->word = (char*)malloc(sizeof(char)*size);
+        strcpy(nuova_cella->word, str);
+        nuova_cella->score = get_word_score(current_word_list);
+        nuova_cella->next = *words_list;
+        *words_list = nuova_cella;
+        return STATUS_SUCCESS;
+    } else
+        return STATUS_FAIL;
+}
+
+void print_wlist(WList l) {
+    if (l) {
+        printf("%s %d\n", l->word, l->score);
+        print_wlist(l->next);
+    }
+}
+
+List get_item(List l, int index){
+    List element = NULL;
+    int i=0;
+    int found=0;
+    while(l && !found){
+        if(index==i){
+            element = l;
+            found = 1;
+        }
+        i++;
+        l=l->next;
+    }
+    return element;
+}
+
+void list_copy(List source, List *dest){
+    while(source){
+        append(dest,source->row,source->col,source->extra,source->letter);
+        source=source->next;
+    }
+}
+
+WList get_max_wlist_score(WList wlist){
+    int max=0;
+    int wlmax = NULL;
+    while(wlist){
+        if(wlist->score > max){
+            max = wlist->score;
+            wlmax = wlist;
+        }
+        wlist = wlist->next;
+    }
+    return wlmax;
 }

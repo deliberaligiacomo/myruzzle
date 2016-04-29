@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <string.h>
 
 #include "setting.h"
 #include "list_directive.h"
@@ -66,16 +67,16 @@ int trova_parola_ricorsivo(char **mat, char **scores, char *parola, int **used, 
  * @param moves the list of the moves done to find the current word
  * @return 1 if word found, 0 otherwise
  */
-int find_word(char **mat, char **scores, char *parola, int dim, List *moves) {
+int find_word(char **mat, char **scores, char *parola, int dim, List *moves, int **used) {
     /* indicates the cells already used */
-    int **used;
+
     /* row and column indexes */
     int r, c;
     /* rappresents if current word has been found or not */
     int answer = 0;
 
     /* initialize used */
-    used = init_int_matrix(dim);
+
     if (used) {
         /* loop though mat */
         r = 0;
@@ -105,4 +106,68 @@ int find_word(char **mat, char **scores, char *parola, int dim, List *moves) {
         return answer;
     } else
         return -1;
+}
+
+int find_all(char **mat, char **scores, char *parola, int dim, List *moves) {
+    int **used;
+    int removing_index;
+    int answer;
+
+    int tries = 0;
+    int exit_confirm = 0;
+
+    int firstcycle = 1, firstanswer = 0;
+
+    List elem = NULL;
+    List copy = NULL;
+    WList paths = NULL;
+    used = init_int_matrix(dim);
+
+    int i = 0;
+
+    do {
+        answer = find_word(mat, scores, parola, dim, moves, used);
+
+        if (firstcycle && answer) {
+            firstanswer = 1;
+            firstcycle = 0;
+        }
+
+
+
+        if (answer) {
+            prepend_wlist(&paths, *moves);
+            removing_index = strlen(parola) - 1;
+            elem = get_item(*moves, removing_index);
+            used[elem->row][elem->col] = JOLLY;
+            zero_fill_matrix_but_jolly(used, dim);
+
+            list_copy(*moves, &copy);
+
+        } else {
+            removing_index--;
+            elem = get_item(copy, removing_index);
+            zero_fill_matrix(used, dim);
+            used[elem->row][elem->col] = JOLLY;
+
+            free_list(copy);
+            copy = NULL;
+
+            tries++;
+            if (tries > 100)
+                exit_confirm = 1;
+
+        }
+        *moves = NULL;
+
+
+    } while (!exit_confirm && i++ < 10);
+    printf("Print paths:\n");
+    print_wlist(paths);
+    
+    WList max = get_max_wlist_score(paths);
+    
+    printf("MAX SCORE: %d\n", max->score);
+    
+    return firstanswer;
 }

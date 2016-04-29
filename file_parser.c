@@ -92,7 +92,7 @@ int loop_dictionary(char *path, char *output, char **field, char **scores, int d
             /* upcase current word */
             upcase(cword);
             /* check if it's present */
-            present = find_word(field, scores, cword, dim, &(*moves));
+            present = find_all(field, scores, cword, dim, &(*moves));
             
             if (present) {
                 /* since the current word is present in the matrix, save it in the output file */

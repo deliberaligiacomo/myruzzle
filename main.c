@@ -2,7 +2,24 @@
 #include <stdlib.h>
 #include <string.h>
 #include "setting.h"
+/*
+int main() {
 
+    List l = NULL;
+    List copy = NULL;
+
+    append(&l, 0, 0, '.', 'A');
+    append(&l, 1, 1, '.', 'B');
+    append(&l, 2, 2, '.', 'C');
+    append(&l, 3, 3, '.', 'D');
+
+    list_copy(l,&copy);
+    print_list(l);
+    print_list(copy);
+    
+    return 0;
+}
+*/
 /*
     compile with: gcc -std=gnu89 -pedantic -Wall main.c lists.c file_parser.c ruzzle.c settings.c -o rzz
  */
@@ -59,6 +76,8 @@ int main(int argc, char *argv[]) {
         List moves = NULL;
         /* indicates if current word is present in the playing field */
         int present;
+
+        WList path = NULL;
 
         printf("Interactive mode. Create the field and define bonus.\n--------------\n");
         printf("Insert field dim: ");
@@ -117,9 +136,9 @@ int main(int argc, char *argv[]) {
             /* if the typed word differ "0" */
             if (strcmp(cword, "0") != 0) {
                 upcase(cword);
-                present = find_word(field, scores, cword, dim, &moves);
+                present = find_all(field, scores, cword, dim, &moves);
                 if (present) {
-                    cword_score = get_word_score(moves, scores);
+                    cword_score = get_word_score(moves);
                     printf("Word %s present with score %d\n", cword, cword_score);
                     print_list(moves);
                 } else
@@ -131,6 +150,7 @@ int main(int argc, char *argv[]) {
                 continua = 0;
             }
         }
+
         free_char_matrix(field, dim);
         free_char_matrix(scores, dim);
     } else {

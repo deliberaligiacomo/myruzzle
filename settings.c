@@ -26,6 +26,14 @@ void zero_fill_matrix(int **matrix, int dim) {
             matrix[i][j] = 0;
 }
 
+void zero_fill_matrix_but_jolly(int **matrix, int dim) {
+    int i, j;
+    for (i = dim - 1; i >= 0; i--)
+        for (j = dim - 1; j >= 0; j--)
+            if(matrix[i][j] != JOLLY)
+                matrix[i][j] = 0;
+}
+
 /* http://c-faq.com/aryptr/dynmuldimary.html */
 int** init_int_matrix(int dim) {
     int i;

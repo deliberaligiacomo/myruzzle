@@ -13,6 +13,13 @@ struct node{
 /* A List structure that rappresnts a word, it score and it path into the playing field */
 typedef struct node* List;
 
+struct wnode{
+    int score;
+    char *word;
+    struct wnode *next;
+};
+typedef struct wnode* WList;
+
 /**
  * Append an element to the tail of a list (at the end)
  * @param l the list where append
@@ -59,7 +66,7 @@ void free_list(List l);
  * @param scores the score matrix where to find the bonus
  * @return the score of the given word
  */
-int get_word_score(List l, char **scores);
+int get_word_score(List l);
 
 /**
  * Given the list rappresening a word found in the playing field, saves the word, the score and the path into a file
