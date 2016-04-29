@@ -67,7 +67,6 @@ int trova_parola_ricorsivo(char **mat, char **scores, char *parola, int **used, 
  * @return 1 if word found, 0 otherwise
  */
 int find_word(char **mat,char **scores, char *parola, int dim, List *moves) {
-
     /* indicates the cells already used */
     int **used;
     /* row and column indexes */
@@ -102,8 +101,6 @@ int find_word(char **mat,char **scores, char *parola, int dim, List *moves) {
         }
         r++;
     }
-    
-    //free_int_matrix(used,dim);
     
     return answer;
 }

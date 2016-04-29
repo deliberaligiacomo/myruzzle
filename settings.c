@@ -66,7 +66,7 @@ void upcase(char *str) {
     if (*str != '\0') {
         if (*str >= 'a' && *str <= 'z')
             *str -= ('a' - 'A');
-        return upcase(str + 1);
+        upcase(str + 1);
     }
 }
 

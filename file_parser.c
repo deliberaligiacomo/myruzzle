@@ -18,8 +18,6 @@ int parse_schema(char *schema_path, int *dim, char ***field, char ***scores) {
         int i = 0;
         /* when a line is parsed */
         int end_line = 0;
-        /* needed to get the dim from the char (atoi) */
-        char cnv[2];
         /* the row and column indexes */
         int row, column;
         /* indicates if the playing matrix is finished and begin scores matrix */
@@ -82,8 +80,6 @@ int loop_dictionary(char *path, char *output, char **field, char **scores, int d
     char cword[100];
     /* indicates if the current word is present in the matrix */
     int present;
-    /* rappresent the current word score */
-    int cword_score;
 
     /* to clean the previus version of the output file [write, NOT append]*/
     FILE *file_out = fopen(output, "w");
@@ -99,8 +95,6 @@ int loop_dictionary(char *path, char *output, char **field, char **scores, int d
             present = find_word(field, scores, cword, dim, &(*moves));
             
             if (present) {
-                /* get current word score */
-                cword_score = get_word_score(*moves, scores);
                 /* since the current word is present in the matrix, save it in the output file */
                 save_on_file(output, *moves, scores);
             }
