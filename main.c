@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "setting.h"
-#include "list_directive.h"
 
 int main(int argc, char *argv[]) {
 

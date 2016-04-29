@@ -2,7 +2,6 @@
 #include<stdio.h>
 
 #include "setting.h"
-#include "list_directive.h"
 
 int get_letter_score(char letter) {
     int score = 0;

@@ -1,7 +1,7 @@
-#include "setting.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "setting.h"
 
 char** init_char_matrix(int dim) {
     int i, j;

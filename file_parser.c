@@ -25,19 +25,9 @@ int parse_schema(char *schema_path, int *dim, char ***field, char ***scores) {
         /* indicates if the playing matrix is finished and begin scores matrix */
         int field_ended = 0;
 
-        /* loop to get the dim from the file */
-        while (fscanf(file, "%c", &current_char) && !(*dim)) {
-            if (current_char != NEW_LINE && current_char != SPACE) {
-                cnv[0] = current_char;
-                cnv[1] = '\0';
-                *dim = atoi(cnv);
-            }
-        }
-        /* close the file to report the pointer to the file start */
-        fclose(file);        
+        /* get the dim from the file */
+        fscanf(file,"%d",dim);
         
-        /* bring the pointer to the file start */
-        file = fopen(schema_path, "r");
 
         /* allocates in the heap the matrixes */
         *field = init_char_matrix(*dim);

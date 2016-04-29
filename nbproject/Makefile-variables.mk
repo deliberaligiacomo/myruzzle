@@ -9,19 +9,19 @@ CND_DISTDIR=dist
 # Debug configuration
 CND_PLATFORM_Debug=GNU-Linux
 CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-Linux
-CND_ARTIFACT_NAME_Debug=ruzzle
-CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux/ruzzle
+CND_ARTIFACT_NAME_Debug=myruzzle
+CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux/myruzzle
 CND_PACKAGE_DIR_Debug=dist/Debug/GNU-Linux/package
-CND_PACKAGE_NAME_Debug=ruzzle.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux/package/ruzzle.tar
+CND_PACKAGE_NAME_Debug=myruzzle.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux/package/myruzzle.tar
 # Release configuration
 CND_PLATFORM_Release=GNU-Linux
 CND_ARTIFACT_DIR_Release=dist/Release/GNU-Linux
-CND_ARTIFACT_NAME_Release=ruzzle
-CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux/ruzzle
+CND_ARTIFACT_NAME_Release=myruzzle
+CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux/myruzzle
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux/package
-CND_PACKAGE_NAME_Release=ruzzle.tar
-CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux/package/ruzzle.tar
+CND_PACKAGE_NAME_Release=myruzzle.tar
+CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux/package/myruzzle.tar
 #
 # include compiler specific variables
 #
