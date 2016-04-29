@@ -3,6 +3,9 @@
 #include <string.h>
 #include "setting.h"
 
+/*
+    compile with: gcc -std=gnu89 -pedantic -Wall main.c lists.c file_parser.c ruzzle.c settings.c -o rzz
+ */
 int main(int argc, char *argv[]) {
 
     /* if the arguments passed are exatly 3 */
@@ -105,7 +108,7 @@ int main(int argc, char *argv[]) {
         printf("--------------\n");
 
         /* ############### END FILL MATRIXES ###############*/
-        
+
         /* while the users insert valid words, continue */
         while (continua) {
             printf("Insert a word to check [type 0 to end]: ");

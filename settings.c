@@ -36,7 +36,9 @@ int** init_int_matrix(int dim) {
     if (matrix) {
         for (i = 0; i < dim; i++)
             matrix[i] = malloc(dim * sizeof (int));
-
+        
+        zero_fill_matrix(matrix,dim);
+        
         return matrix;
     } else
         return NULL;

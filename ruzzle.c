@@ -5,7 +5,7 @@
 #include "list_directive.h"
 
 /**
- * Loop though the playing field to determinate the path made to build the word given
+ * Loop though the playing field to determinate the path made to build the given word 
  * @param mat the playing field
  * @param scores the bonus matrix
  * @param parola the current word to search
@@ -38,7 +38,7 @@ int trova_parola_ricorsivo(char **mat, char **scores, char *parola, int **used, 
                     /* append the path */
                     append(&(*l), r, c, scores[r][c], mat[r][c]);
                     /* try search with the next char */
-                    found = trova_parola_ricorsivo(mat,scores, parola + 1, used, r, c, last + 1, dim, &(*l));
+                    found = trova_parola_ricorsivo(mat, scores, parola + 1, used, r, c, last + 1, dim, &(*l));
                     /* if not found, it wasn-t a valid path */
                     if (!found) {
                         /* backtrack */
@@ -66,7 +66,7 @@ int trova_parola_ricorsivo(char **mat, char **scores, char *parola, int **used, 
  * @param moves the list of the moves done to find the current word
  * @return 1 if word found, 0 otherwise
  */
-int find_word(char **mat,char **scores, char *parola, int dim, List *moves) {
+int find_word(char **mat, char **scores, char *parola, int dim, List *moves) {
     /* indicates the cells already used */
     int **used;
     /* row and column indexes */
@@ -76,31 +76,33 @@ int find_word(char **mat,char **scores, char *parola, int dim, List *moves) {
 
     /* initialize used */
     used = init_int_matrix(dim);
-    
-    /* loop though mat */
-    r = 0;
-    while (r < dim && !answer) {
-        c = 0;
-        while (c < dim && !answer) {
-            /* assumo che parola abbia almeno un carattere */
-            if (mat[r][c] == parola[0]) {
-                /* it could be a valid move, append the path */
-                append(&(*moves), r, c, scores[r][c], mat[r][c]);
-                /* set the current cell used */
-                used[r][c] = 1;
-                /* try to find the word from this cell */
-                answer = trova_parola_ricorsivo(mat, scores, parola + 1, used, r, c, 1, dim, &(*moves));
-                /* if not found */
-                if (!answer){
-                    /* this cell wasn't valid, backtrack */
-                    used[r][c] = 0;
-                    delete_last(&(*moves));
+    if (used) {
+        /* loop though mat */
+        r = 0;
+        while (r < dim && !answer) {
+            c = 0;
+            while (c < dim && !answer) {
+                /* assumo che parola abbia almeno un carattere */
+                if (mat[r][c] == parola[0]) {
+                    /* it could be a valid move, append the path */
+                    append(&(*moves), r, c, scores[r][c], mat[r][c]);
+                    /* set the current cell used */
+                    used[r][c] = 1;
+                    /* try to find the word from this cell */
+                    answer = trova_parola_ricorsivo(mat, scores, parola + 1, used, r, c, 1, dim, &(*moves));
+                    /* if not found */
+                    if (!answer) {
+                        /* this cell wasn't valid, backtrack */
+                        used[r][c] = 0;
+                        delete_last(&(*moves));
+                    }
                 }
+                c++;
             }
-            c++;
+            r++;
         }
-        r++;
-    }
-    
-    return answer;
+
+        return answer;
+    } else
+        return -1;
 }
