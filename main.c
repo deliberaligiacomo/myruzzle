@@ -32,6 +32,9 @@ int main(int argc, char *argv[]) {
             printf("Playground:\n");
             print_char_matrix(field, dim);
             printf("\nOutput file saved successfully!\n");
+            
+            free_char_matrix(scores,dim);
+            free_char_matrix(field,dim);
         } else
             printf("\nSomething went wrong while parsing the schema!\n");
     } else if (argc == MODE_INTERACTIVE) {
@@ -103,7 +106,7 @@ int main(int argc, char *argv[]) {
         while (continua) {
             printf("Insert a word to check [type 0 to end]: ");
             scanf("%s", cword);
-
+            
             /* if the typed word differ "0" */
             if (strcmp(cword, "0") != 0) {
                 upcase(cword);
@@ -112,13 +115,15 @@ int main(int argc, char *argv[]) {
                     cword_score = get_word_score(moves, scores);
                     printf("Word %s present with score %d\n", cword, cword_score);
                     print_list(moves);
-                    free_list(&moves);
+                    free_list(moves);
                 } else
                     printf("%s: not present\n\n", cword);
             } else
                 /* the user typed "0", stop asking words */
                 continua = 0;
         }
+        free_char_matrix(field,dim);
+        free_char_matrix(scores,dim);
     } else {
         /* the given parameters are not correct (validity only checks pars number) */
         printf("Usage: /ruzzle [<dizionario> <schema> <output>]\n");

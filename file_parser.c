@@ -106,7 +106,7 @@ int loop_dictionary(char *path, char *output, char **field, char **scores, int d
             }
             
             /* clean the moves list*/
-            free_list(&(*moves));
+            free_list(*moves);
             *moves = NULL;
         }
     /* close the output file to prevent errors */

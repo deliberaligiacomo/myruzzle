@@ -103,5 +103,7 @@ int find_word(char **mat,char **scores, char *parola, int dim, List *moves) {
         r++;
     }
     
+    //free_int_matrix(used,dim);
+    
     return answer;
 }

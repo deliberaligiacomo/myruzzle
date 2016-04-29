@@ -51,7 +51,7 @@ void print_list(List l);
  * Free the memory taken by a list
  * @param l the list to free
  */
-void free_list(List *l);
+void free_list(List l);
 
 /**
  * Given the list rappresening a word found in the playing field, return the score of that word considering the all bonus

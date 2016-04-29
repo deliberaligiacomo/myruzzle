@@ -101,10 +101,10 @@ void delete_last(List *l) {
     }
 }
 
-void free_list(List *l) {
-    if (*l != NULL) {
-        free_list(&((*l)->next));
-        free(*l);
+void free_list(List list) {
+    if (list) {
+        free_list(list->next);
+        free(list);
     }
 }
 
