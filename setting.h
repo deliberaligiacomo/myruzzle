@@ -23,6 +23,7 @@
 #define TRIPLE_WORD 'T'
 
 #define JOLLY -1
+#define DELETED -13
 
 /**
  * Given the file path to the game schema, fill in the playing field matrix, the score matrix and their dimesnion

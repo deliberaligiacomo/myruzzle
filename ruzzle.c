@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "setting.h"
 #include "list_directive.h"
@@ -109,65 +110,49 @@ int find_word(char **mat, char **scores, char *parola, int dim, List *moves, int
 }
 
 int find_all(char **mat, char **scores, char *parola, int dim, List *moves) {
-    int **used;
-    int removing_index;
+
+    int **used = init_int_matrix(dim);
+
+    int size = 1;
+    List *list_array;
     int answer;
+    int index;
+    int cindex_removing = strlen(parola - 2);
 
-    int tries = 0;
-    int exit_confirm = 0;
+    answer = find_word(mat, scores, parola, dim, moves, used);
 
-    int firstcycle = 1, firstanswer = 0;
-
-    List elem = NULL;
-    List copy = NULL;
-    WList paths = NULL;
-    used = init_int_matrix(dim);
-
-    int i = 0;
-
-    do {
-        answer = find_word(mat, scores, parola, dim, moves, used);
-
-        if (firstcycle && answer) {
-            firstanswer = 1;
-            firstcycle = 0;
-        }
+    if (answer) {
+        do {
+            List starting_cell = *moves;
+            List current_moves;
+            list_array = malloc(sizeof (struct node)*size);
+            list_copy(*moves, &list_array[0]);
 
 
+            current_moves = get_item(list_array[0]);
+            zero_fill_matrix(used);
+            used[get_item(current_moves, cindex_removing + 1)->row][get_item(current_moves, cindex_removing + 1)->col] = JOLLY;
 
-        if (answer) {
-            prepend_wlist(&paths, *moves);
-            removing_index = strlen(parola) - 1;
-            elem = get_item(*moves, removing_index);
-            used[elem->row][elem->col] = JOLLY;
-            zero_fill_matrix_but_jolly(used, dim);
-
-            list_copy(*moves, &copy);
-
-        } else {
-            removing_index--;
-            elem = get_item(copy, removing_index);
-            zero_fill_matrix(used, dim);
-            used[elem->row][elem->col] = JOLLY;
-
-            free_list(copy);
-            copy = NULL;
-
-            tries++;
-            if (tries > 100)
-                exit_confirm = 1;
-
-        }
-        *moves = NULL;
+            do {
+                while (trova_parola_ricorsivo(mat, scores, parola, used, starting_cell->row, starting_cell->col, 1, dim, moves)) {
+                    size++;
+                    list_array = realloc(list_array, size * sizeof (struct node));
+                    list_copy(*moves, list_array[size - 1]);
 
 
-    } while (!exit_confirm && i++ < 10);
-    printf("Print paths:\n");
-    print_wlist(paths);
-    
-    WList max = get_max_wlist_score(paths);
-    
-    printf("MAX SCORE: %d\n", max->score);
-    
-    return firstanswer;
+                    used[get_last_item(*moves)->row][get_last_item(*moves)->col] = JOLLY;
+                    zero_fill_matrix_but_jolly(used, dim);
+                }
+
+                zero_fill_matrix(used, dim);
+                for (index = 0; index < size; index++) {
+                    used[get_item(list_array[index], cindex_removing)->row][get_item(list_array[index], cindex_removing)->col] = (cindex_removing == 0) ? DELETED : JOLLY;
+                }
+                cindex_removing--;
+            } while (cindex_removing >= 0);
+
+        } while (find_word(mat, scores, parola, dim, moves, used));
+    }
+
+    return answer;
 }

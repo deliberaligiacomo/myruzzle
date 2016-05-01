@@ -248,3 +248,12 @@ WList get_max_wlist_score(WList wlist){
     }
     return wlmax;
 }
+
+List get_last_item(List list){
+    if(list==NULL)
+        return NULL;
+    else if(list->next == NULL)
+        return list;
+    else
+        return get_item(list->next);
+}

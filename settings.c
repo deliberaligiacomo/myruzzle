@@ -23,14 +23,15 @@ void zero_fill_matrix(int **matrix, int dim) {
     int i, j;
     for (i = dim - 1; i >= 0; i--)
         for (j = dim - 1; j >= 0; j--)
-            matrix[i][j] = 0;
+            if (matrix[i][j] != DELETED)
+                matrix[i][j] = 0;
 }
 
 void zero_fill_matrix_but_jolly(int **matrix, int dim) {
     int i, j;
     for (i = dim - 1; i >= 0; i--)
         for (j = dim - 1; j >= 0; j--)
-            if(matrix[i][j] != JOLLY)
+            if (matrix[i][j] != JOLLY)
                 matrix[i][j] = 0;
 }
 
@@ -44,9 +45,9 @@ int** init_int_matrix(int dim) {
     if (matrix) {
         for (i = 0; i < dim; i++)
             matrix[i] = malloc(dim * sizeof (int));
-        
-        zero_fill_matrix(matrix,dim);
-        
+
+        zero_fill_matrix(matrix, dim);
+
         return matrix;
     } else
         return NULL;
