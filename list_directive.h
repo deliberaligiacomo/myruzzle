@@ -16,6 +16,7 @@ typedef struct node* List;
 struct wnode{
     int score;
     char *word;
+    char *path;
     struct wnode *next;
 };
 typedef struct wnode* WList;
@@ -77,5 +78,11 @@ int get_word_score(List l);
  */
 int save_on_file(char* output_path, List l, char **scores);
 
+void print_wlist(WList l);
+int prepend_wlist(WList *words_list, List current_word_list);
+List get_last_item(List list);
+void free_wlist(WList wlist);
+void list_copy(List source, List *dest);
+List get_item(List l, int index);
 #endif /* LIST_DIRECTIVE_H */
 

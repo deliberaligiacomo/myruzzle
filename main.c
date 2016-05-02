@@ -138,9 +138,11 @@ int main(int argc, char *argv[]) {
                 upcase(cword);
                 present = find_all(field, scores, cword, dim, &moves);
                 if (present) {
+                    
                     cword_score = get_word_score(moves);
                     printf("Word %s present with score %d\n", cword, cword_score);
                     print_list(moves);
+                     
                 } else
                     printf("%s: not present\n\n", cword);
                 free_list(moves);

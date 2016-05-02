@@ -34,7 +34,7 @@ int trova_parola_ricorsivo(char **mat, char **scores, char *parola, int **used, 
             c = pc - 1;
             while (c <= pc + 1 && !found) {
                 /* still insede indexes AND cell never used AND current cell char equals the first of the current word  */
-                if (r >= 0 && r < dim && c >= 0 && c < dim && !used[r][c] && mat[r][c] == parola[0]) {
+                if (r >= 0 && r < dim && c >= 0 && c < dim && !used[r][c] && mat[r][c] == parola[0] && used[r][c] != JOLLY && used[r][c] != DELETED) {
                     /* could valid move, increment highlight*/
                     used[r][c] = last + 1;
                     /* append the path */
@@ -85,7 +85,7 @@ int find_word(char **mat, char **scores, char *parola, int dim, List *moves, int
             c = 0;
             while (c < dim && !answer) {
                 /* assumo che parola abbia almeno un carattere */
-                if (mat[r][c] == parola[0]) {
+                if (mat[r][c] == parola[0] && used[r][c] != JOLLY && used[r][c] != DELETED) {
                     /* it could be a valid move, append the path */
                     append(&(*moves), r, c, scores[r][c], mat[r][c]);
                     /* set the current cell used */
@@ -117,41 +117,74 @@ int find_all(char **mat, char **scores, char *parola, int dim, List *moves) {
     List *list_array;
     int answer;
     int index;
-    int cindex_removing = strlen(parola - 2);
+    int cindex_removing = strlen(parola) - 2;
+    List elem, rm_item, starting_cell;
+    WList paths = NULL;
+
 
     answer = find_word(mat, scores, parola, dim, moves, used);
 
-    if (answer) {
+    if (answer && cindex_removing>=0) {
+        list_array = malloc(sizeof (struct node));
         do {
-            List starting_cell = *moves;
-            List current_moves;
-            list_array = malloc(sizeof (struct node)*size);
-            list_copy(*moves, &list_array[0]);
+            starting_cell = *moves;
+            list_array = realloc(list_array, size * sizeof (struct node));
+            list_copy(*moves, &list_array[size - 1]);
 
-
-            current_moves = get_item(list_array[0]);
-            zero_fill_matrix(used);
-            used[get_item(current_moves, cindex_removing + 1)->row][get_item(current_moves, cindex_removing + 1)->col] = JOLLY;
-
+            *moves = NULL;
+            
+            zero_fill_matrix(used, dim);
+            elem = get_item(list_array[size - 1], cindex_removing + 1);
+            used[elem->row][elem->col] = JOLLY;
             do {
                 while (trova_parola_ricorsivo(mat, scores, parola, used, starting_cell->row, starting_cell->col, 1, dim, moves)) {
                     size++;
                     list_array = realloc(list_array, size * sizeof (struct node));
-                    list_copy(*moves, list_array[size - 1]);
+                    list_copy(*moves, &list_array[size - 1]);
+                    elem = get_last_item(*moves);
 
+                    *moves = NULL;
 
-                    used[get_last_item(*moves)->row][get_last_item(*moves)->col] = JOLLY;
+                    used[elem->row][elem->col] = JOLLY;
                     zero_fill_matrix_but_jolly(used, dim);
                 }
-
                 zero_fill_matrix(used, dim);
                 for (index = 0; index < size; index++) {
-                    used[get_item(list_array[index], cindex_removing)->row][get_item(list_array[index], cindex_removing)->col] = (cindex_removing == 0) ? DELETED : JOLLY;
+                    rm_item = get_item(list_array[index], cindex_removing);
+                    used[rm_item->row][rm_item->col] = (cindex_removing == 0) ? DELETED : JOLLY;
                 }
                 cindex_removing--;
             } while (cindex_removing >= 0);
-
+            size++;
+            cindex_removing = strlen(parola) - 2;
         } while (find_word(mat, scores, parola, dim, moves, used));
+
+        int max_score = 0;
+        List max = NULL,supp=NULL,list=NULL;
+        for (index = 0; index < size - 1; index++) {
+            /*print_list(get_item(list_array[index], 0));*/
+            list = get_item(list_array[index], 0);
+            if(get_word_score(list) > max_score){
+                free_list(supp);
+                supp = NULL;
+                list_copy(list,&supp);
+                max_score = get_word_score(list); 
+            }
+            prepend_wlist(&paths,get_item(list_array[index], 0));
+        }
+        free_list(*moves);
+        *moves = NULL;
+        list_copy(supp,moves);
+        
+        printf("Available paths:\n");
+        print_wlist(paths);
+        printf("\n");
+        free_wlist(paths);
+        /*
+        for (index = 0; index < size - 1; index++) {
+            free_list(get_item(list_array[index], 0));
+        }
+         * */
     }
 
     return answer;

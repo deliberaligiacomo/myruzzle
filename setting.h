@@ -96,6 +96,7 @@ void print_int_matrix(int **matrix, int dim);
  */
 void upcase(char *str);
 
-
+void zero_fill_matrix_but_jolly(int **matrix, int dim);
+int find_all(char **mat, char **scores, char *parola, int dim, List *moves);
 #endif /* SETTING_H */
 
