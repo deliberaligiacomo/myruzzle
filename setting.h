@@ -22,6 +22,9 @@
 #define DOUBLE_WORD 'D'
 #define TRIPLE_WORD 'T'
 
+#define JOLLY -1
+#define DELETED -13
+
 /**
  * Given the file path to the game schema, fill in the playing field matrix, the score matrix and their dimesnion
  * @param path the path to the scheme file
@@ -53,7 +56,7 @@ int loop_dictionary(char *dic_path,char *output_path, char **field, char **score
  * @param moves the list where to save the path
  * @return STATE_SUCCESS (1) if all correct, STATE_ERROR (0) otherwise
  */
-int find_word(char **mat, char **scores, char *word, int dim, List *moves);
+int find_word(char **mat, char **scores, char *word, int dim, List *moves, int **used);
 
 /**
  * Allocates dinamically a square matrix (dim x dim) in the Heap
@@ -93,6 +96,7 @@ void print_int_matrix(int **matrix, int dim);
  */
 void upcase(char *str);
 
-
+void zero_fill_matrix_but_jolly(int **matrix, int dim);
+int find_all(char **mat, char **scores, char *parola, int dim, List *moves);
 #endif /* SETTING_H */
 

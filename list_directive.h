@@ -13,6 +13,14 @@ struct node{
 /* A List structure that rappresnts a word, it score and it path into the playing field */
 typedef struct node* List;
 
+struct wnode{
+    int score;
+    char *word;
+    char *path;
+    struct wnode *next;
+};
+typedef struct wnode* WList;
+
 /**
  * Append an element to the tail of a list (at the end)
  * @param l the list where append
@@ -59,7 +67,7 @@ void free_list(List l);
  * @param scores the score matrix where to find the bonus
  * @return the score of the given word
  */
-int get_word_score(List l, char **scores);
+int get_word_score(List l);
 
 /**
  * Given the list rappresening a word found in the playing field, saves the word, the score and the path into a file
@@ -70,5 +78,11 @@ int get_word_score(List l, char **scores);
  */
 int save_on_file(char* output_path, List l, char **scores);
 
+void print_wlist(WList l);
+int prepend_wlist(WList *words_list, List current_word_list);
+List get_last_item(List list);
+void free_wlist(WList wlist);
+void list_copy(List source, List *dest);
+List get_item(List l, int index);
 #endif /* LIST_DIRECTIVE_H */
 
