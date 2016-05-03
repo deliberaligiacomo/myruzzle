@@ -2,30 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "setting.h"
-/*
-int main() {
-
-    List l = NULL;
-    List copy = NULL;
-    
-    List *ptr = &copy;
-
-    append(&l, 0, 0, '.', 'A');
-    append(&l, 1, 1, '.', 'B');
-    append(&l, 2, 2, '.', 'C');
-    append(&l, 3, 3, '.', 'D');
-
-    printf("list copy...\n");
-    list_copy(l,ptr);
-    
-    printf("l = ");
-    print_list(l);
-    printf("*ptr = ");
-    print_list(*ptr);
-    
-    return 0;
-}
- */
 
 /*
     compile with: gcc -std=gnu89 -pedantic -Wall main.c lists.c file_parser.c ruzzle.c settings.c -o rzz
@@ -83,7 +59,7 @@ int main(int argc, char *argv[]) {
         List moves = NULL;
         /* indicates if current word is present in the playing field */
         int present;
-
+        /* rappresents all the available paths for the current word */
         WList paths = NULL;
 
         printf("Interactive mode. Create the field and define bonus.\n--------------\n");
@@ -143,8 +119,10 @@ int main(int argc, char *argv[]) {
             /* if the typed word differ "0" */
             if (strcmp(cword, "0") != 0) {
                 upcase(cword);
+                /* search for it */
                 present = find_all(field, scores, cword, dim, &moves, &paths);
                 if (present) {
+                    /* obtain the score*/
                     cword_score = get_word_score(moves);
                     printf("Word %s present with score %d\n", cword, cword_score);
                     print_list(moves);
@@ -162,11 +140,11 @@ int main(int argc, char *argv[]) {
                 /* the user typed "0", stop asking words */
                 continua = 0;
             }
-
+            /* free up memory */
             free_list(moves);
             moves = NULL;
         }
-
+        /* free up memory */
         free_char_matrix(field, dim);
         free_char_matrix(scores, dim);
     } else {

@@ -51,9 +51,9 @@ int get_letter_score(char letter) {
 }
 
 int append(List *destination, int row, int col, char extra, char letter) {
-    if(destination==NULL)
+    if (destination == NULL)
         printf("wrong params!\n");
-    if (*destination == NULL) {    
+    if (*destination == NULL) {
         *destination = (List) malloc(sizeof (struct node));
         if (*destination) {
             (*destination)->next = NULL;
@@ -191,7 +191,9 @@ int get_size(List l) {
 }
 
 int prepend_wlist(WList *words_list, List current_word_list) {
+    /* the string for the word & the string for the path*/
     char *str, *strpath;
+
     List pc = current_word_list;
     int i = 0;
     int size = get_size(current_word_list);
@@ -199,6 +201,7 @@ int prepend_wlist(WList *words_list, List current_word_list) {
 
     int cwscore = get_word_score(current_word_list);
 
+    /* bring forward the list until the score is grather */
     iter = *words_list;
     prec = NULL;
     while (iter != NULL && iter->score > cwscore) {
@@ -206,14 +209,14 @@ int prepend_wlist(WList *words_list, List current_word_list) {
         iter = iter->next;
     }
 
-
+    /* malloc space for word and for path */
     str = (char*) malloc(sizeof (char)*size);
-    strpath = (char*) malloc(sizeof (char)*5 * size + 5);
+    strpath = (char*) malloc(sizeof (char)*5 * size + 1);
 
     i = 0;
+    /* write the path int strpath */
     while (pc) {
         str[i] = pc->letter;
-
         strpath[i * 5] = '(';
         strpath[i * 5 + 1] = '0' + pc->row;
         strpath[i * 5 + 2] = ',';
@@ -226,6 +229,7 @@ int prepend_wlist(WList *words_list, List current_word_list) {
     str[i] = '\0';
     strpath[i * 5] = '\0';
 
+    /* malloc new cell */
     nuova_cella = (WList) malloc(sizeof (struct wnode));
     if (nuova_cella) {
         nuova_cella->path = (char*) malloc(sizeof (char)*5 * size + 5);
@@ -239,7 +243,7 @@ int prepend_wlist(WList *words_list, List current_word_list) {
 
         nuova_cella->score = cwscore;
         nuova_cella->next = iter;
-        
+
         if (prec == NULL) {
             *words_list = nuova_cella;
         } else {
