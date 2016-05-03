@@ -51,7 +51,9 @@ int get_letter_score(char letter) {
 }
 
 int append(List *destination, int row, int col, char extra, char letter) {
-    if (*destination == NULL) {
+    if(destination==NULL)
+        printf("wrong params!\n");
+    if (*destination == NULL) {    
         *destination = (List) malloc(sizeof (struct node));
         if (*destination) {
             (*destination)->next = NULL;
@@ -158,7 +160,6 @@ int save_on_file(char* output_path, List l) {
     } else {
         if (l) {
             score = get_word_score(l);
-            printf("score: %d\n", score);
 
             while (l) {
                 fprintf(file, "%c", l->letter);
@@ -194,7 +195,17 @@ int prepend_wlist(WList *words_list, List current_word_list) {
     List pc = current_word_list;
     int i = 0;
     int size = get_size(current_word_list);
-    WList nuova_cella;
+    WList nuova_cella, iter, prec;
+
+    int cwscore = get_word_score(current_word_list);
+
+    iter = *words_list;
+    prec = NULL;
+    while (iter != NULL && iter->score > cwscore) {
+        prec = iter;
+        iter = iter->next;
+    }
+
 
     str = (char*) malloc(sizeof (char)*size);
     strpath = (char*) malloc(sizeof (char)*5 * size + 5);
@@ -226,9 +237,14 @@ int prepend_wlist(WList *words_list, List current_word_list) {
         strcpy(nuova_cella->word, str);
         free(str);
 
-        nuova_cella->score = get_word_score(current_word_list);
-        nuova_cella->next = *words_list;
-        *words_list = nuova_cella;
+        nuova_cella->score = cwscore;
+        nuova_cella->next = iter;
+        
+        if (prec == NULL) {
+            *words_list = nuova_cella;
+        } else {
+            prec->next = nuova_cella;
+        }
         return STATUS_SUCCESS;
     } else
         return STATUS_FAIL;

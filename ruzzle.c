@@ -232,12 +232,10 @@ int find_all(char **mat, char **scores, char *parola, int dim, List *moves, WLis
             list_copy(max_scored_list, moves);
 
             /* for the caller */
-            *available_paths = paths;
-            
-            /* free up memory */
-            free_list(*moves);
-             *moves = NULL;
-             
+            if(available_paths != NULL)
+                *available_paths = paths;
+
+            /*
             for (index = 0; index < size - 1; index++) {
                 support_list = get_item(list_array[index], 0);
                 free_list(support_list);
@@ -245,7 +243,7 @@ int find_all(char **mat, char **scores, char *parola, int dim, List *moves, WLis
             }
             free(list_array);
             list_array = NULL;
-             
+             */
         } else {
             throw("MALLOC FAIL -- find_all");
         }

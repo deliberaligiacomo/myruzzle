@@ -7,15 +7,21 @@ int main() {
 
     List l = NULL;
     List copy = NULL;
+    
+    List *ptr = &copy;
 
     append(&l, 0, 0, '.', 'A');
     append(&l, 1, 1, '.', 'B');
     append(&l, 2, 2, '.', 'C');
     append(&l, 3, 3, '.', 'D');
 
-    list_copy(l,&copy);
+    printf("list copy...\n");
+    list_copy(l,ptr);
+    
+    printf("l = ");
     print_list(l);
-    print_list(copy);
+    printf("*ptr = ");
+    print_list(*ptr);
     
     return 0;
 }
@@ -139,7 +145,6 @@ int main(int argc, char *argv[]) {
                 upcase(cword);
                 present = find_all(field, scores, cword, dim, &moves, &paths);
                 if (present) {
-
                     cword_score = get_word_score(moves);
                     printf("Word %s present with score %d\n", cword, cword_score);
                     print_list(moves);
@@ -153,12 +158,13 @@ int main(int argc, char *argv[]) {
                 } else
                     printf("%s: not present\n\n", cword);
 
-                free_list(moves);
-                moves = NULL;
             } else {
                 /* the user typed "0", stop asking words */
                 continua = 0;
             }
+
+            free_list(moves);
+            moves = NULL;
         }
 
         free_char_matrix(field, dim);

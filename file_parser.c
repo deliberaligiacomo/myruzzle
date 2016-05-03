@@ -88,6 +88,7 @@ int loop_dictionary(char *path, char *output, char **field, char **scores, int d
             /* check if it's present */
             present = find_all(field, scores, cword, dim, moves,NULL);
             if (present) {
+                printf("Looking for '%s'...\n",cword);
                 /* since the current word is present in the matrix, save it in the output file */
                 save_on_file(output, *moves);
             }
