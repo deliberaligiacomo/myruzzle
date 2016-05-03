@@ -73,10 +73,9 @@ int get_word_score(List l);
  * Given the list rappresening a word found in the playing field, saves the word, the score and the path into a file
  * @param output_path the path where to save the output file
  * @param l the list rappresentig the word 
- * @param scores the score matrix where to find the bonus
  * @return STATE_SUCCESS (1) if prepend ok, STATE_ERROR (0) otherwise
  */
-int save_on_file(char* output_path, List l, char **scores);
+int save_on_file(char* output_path, List l);
 
 void print_wlist(WList l);
 int prepend_wlist(WList *words_list, List current_word_list);

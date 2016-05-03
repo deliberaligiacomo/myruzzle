@@ -50,21 +50,21 @@ int get_letter_score(char letter) {
     return score;
 }
 
-int append(List *l, int row, int col, char extra, char letter) {
-    if (*l == NULL) {
-        *l = (List) malloc(sizeof (struct node));
-        if (*l) {
-            (*l)->next = NULL;
-            (*l)->row = row;
-            (*l)->col = col;
-            (*l)->extra = extra;
-            (*l)->letter = letter;
-            (*l)->letter_score = get_letter_score(letter);
+int append(List *destination, int row, int col, char extra, char letter) {
+    if (*destination == NULL) {
+        *destination = (List) malloc(sizeof (struct node));
+        if (*destination) {
+            (*destination)->next = NULL;
+            (*destination)->row = row;
+            (*destination)->col = col;
+            (*destination)->extra = extra;
+            (*destination)->letter = letter;
+            (*destination)->letter_score = get_letter_score(letter);
             return STATUS_SUCCESS;
         } else
             return STATUS_FAIL;
     } else
-        return append(&((*l)->next), row, col, extra, letter);
+        return append(&((*destination)->next), row, col, extra, letter);
 }
 
 int prepend(List *l, int row, int col, char extra, char letter) {
@@ -148,34 +148,35 @@ int get_word_score(List l) {
     return score;
 }
 
-int save_on_file(char* output_path, List l, char **scores) {
+int save_on_file(char* output_path, List l) {
     FILE *file = fopen(output_path, "a+"); /*append or create*/
     int score = 0;
     List copy = l;
 
     if (!file) {
-        printf("Errore apertura file. [list.174]\n");
+        throw("Errore apertura file. save_on_file\n");
     } else {
-        if (l)
+        if (l) {
             score = get_word_score(l);
+            printf("score: %d\n", score);
 
-        while (l) {
-            fprintf(file, "%c", l->letter);
-            l = l->next;
+            while (l) {
+                fprintf(file, "%c", l->letter);
+                l = l->next;
+            }
+            fprintf(file, " %d ", score);
+
+            while (copy) {
+                if (copy->next == NULL)
+                    fprintf(file, "(%d,%d)", copy->row, copy->col);
+                else
+                    fprintf(file, "(%d,%d)->", copy->row, copy->col);
+                copy = copy->next;
+            }
+
+            fprintf(file, "\n");
         }
-        fprintf(file, " %d ", score);
-
-        while (copy) {
-            if (copy->next == NULL)
-                fprintf(file, "(%d,%d)", copy->row, copy->col);
-            else
-                fprintf(file, "(%d,%d)->", copy->row, copy->col);
-            copy = copy->next;
-        }
-
-        fprintf(file, "\n");
     }
-
     fclose(file);
 
     return STATUS_SUCCESS;
@@ -193,10 +194,11 @@ int prepend_wlist(WList *words_list, List current_word_list) {
     List pc = current_word_list;
     int i = 0;
     int size = get_size(current_word_list);
+    WList nuova_cella;
 
     str = (char*) malloc(sizeof (char)*size);
     strpath = (char*) malloc(sizeof (char)*5 * size + 5);
-    
+
     i = 0;
     while (pc) {
         str[i] = pc->letter;
@@ -213,7 +215,7 @@ int prepend_wlist(WList *words_list, List current_word_list) {
     str[i] = '\0';
     strpath[i * 5] = '\0';
 
-    WList nuova_cella = (WList) malloc(sizeof (struct wnode));
+    nuova_cella = (WList) malloc(sizeof (struct wnode));
     if (nuova_cella) {
         nuova_cella->path = (char*) malloc(sizeof (char)*5 * size + 5);
 
@@ -256,8 +258,10 @@ List get_item(List l, int index) {
 
 void list_copy(List source, List *dest) {
     while (source) {
-        append(dest, source->row, source->col, source->extra, source->letter);
-        source = source->next;
+        if (append(dest, source->row, source->col, source->extra, source->letter))
+            source = source->next;
+        else
+            throw("Append EXEPTION -- list_copy");
     }
 }
 

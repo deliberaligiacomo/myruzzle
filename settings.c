@@ -1,7 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "setting.h"
+
+void throw(char msg[]) {
+    printf("\n========= TROW =========\n");
+    printf(">>\t%s\n", msg);
+    printf("========================\n\n");
+    assert(msg);
+}
 
 /* http://c-faq.com/aryptr/dynmuldimary.html */
 char** init_char_matrix(int dim) {
@@ -37,7 +45,7 @@ void zero_fill_matrix_but_jolly(int **matrix, int dim) {
 
 /* http://c-faq.com/aryptr/dynmuldimary.html */
 int** init_int_matrix(int dim) {
-    int i;
+    int i, j;
     int **matrix;
 
     matrix = malloc(dim * sizeof (int *));
@@ -47,6 +55,10 @@ int** init_int_matrix(int dim) {
             matrix[i] = malloc(dim * sizeof (int));
 
         zero_fill_matrix(matrix, dim);
+
+        for (i = 0; i < dim; i++)
+            for (j = 0; j < dim; j++)
+                matrix[i][j] = '\0';
 
         return matrix;
     } else

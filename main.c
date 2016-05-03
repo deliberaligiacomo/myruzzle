@@ -19,7 +19,8 @@ int main() {
     
     return 0;
 }
-*/
+ */
+
 /*
     compile with: gcc -std=gnu89 -pedantic -Wall main.c lists.c file_parser.c ruzzle.c settings.c -o rzz
  */
@@ -77,7 +78,7 @@ int main(int argc, char *argv[]) {
         /* indicates if current word is present in the playing field */
         int present;
 
-        WList path = NULL;
+        WList paths = NULL;
 
         printf("Interactive mode. Create the field and define bonus.\n--------------\n");
         printf("Insert field dim: ");
@@ -136,15 +137,22 @@ int main(int argc, char *argv[]) {
             /* if the typed word differ "0" */
             if (strcmp(cword, "0") != 0) {
                 upcase(cword);
-                present = find_all(field, scores, cword, dim, &moves);
+                present = find_all(field, scores, cword, dim, &moves, &paths);
                 if (present) {
-                    
+
                     cword_score = get_word_score(moves);
                     printf("Word %s present with score %d\n", cword, cword_score);
                     print_list(moves);
-                     
+
+                    printf("Available paths:\n");
+                    print_wlist(paths);
+                    printf("\n");
+                    free_wlist(paths);
+                    paths = NULL;
+
                 } else
                     printf("%s: not present\n\n", cword);
+
                 free_list(moves);
                 moves = NULL;
             } else {

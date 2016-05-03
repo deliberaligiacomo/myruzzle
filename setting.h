@@ -25,6 +25,8 @@
 #define JOLLY -1
 #define DELETED -13
 
+void throw(char msg[]);
+
 /**
  * Given the file path to the game schema, fill in the playing field matrix, the score matrix and their dimesnion
  * @param path the path to the scheme file
@@ -97,6 +99,6 @@ void print_int_matrix(int **matrix, int dim);
 void upcase(char *str);
 
 void zero_fill_matrix_but_jolly(int **matrix, int dim);
-int find_all(char **mat, char **scores, char *parola, int dim, List *moves);
+int find_all(char **mat, char **scores, char *parola, int dim, List *moves, WList *availabel_paths);
 #endif /* SETTING_H */
 

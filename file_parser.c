@@ -14,8 +14,6 @@ int parse_schema(char *schema_path, int *dim, char ***field, char ***scores) {
     } else {
         /* rappresents the current scanning char */
         char current_char;
-        /* equal to 0 until the first file scanf */
-        int i = 0;
         /* when a line is parsed */
         int end_line = 0;
         /* the row and column indexes */
@@ -24,32 +22,31 @@ int parse_schema(char *schema_path, int *dim, char ***field, char ***scores) {
         int field_ended = 0;
 
         /* get the dim from the file */
-        fscanf(file,"%d",dim);
-        
+        fscanf(file, " %d", dim);
+
 
         /* allocates in the heap the matrixes */
         *field = init_char_matrix(*dim);
         *scores = init_char_matrix(*dim);
 
-        row = -1;
+        row = 0;
         column = 0;
-        while (fscanf(file, "%c", &current_char) && !feof(file)) {
+        while (fscanf(file, " %c", &current_char) && !feof(file)) {
             if (current_char != NEW_LINE && current_char != SPACE) {
-                if (i != 0) {
-                    /* dimension already found, begin chars */
-                    
-                    /* if !filed_ended the playing matrix is finisced and begins the scores one */
-                    if (!field_ended) {
-                        (*field)[row][column] = current_char;
-                    } else {
-                        (*scores)[row][column] = current_char;
-                    }
-                    column++;
-                    
-                    /* columns go form 0 to dim-1*/
-                    column = column % (*dim);
+
+                /* dimension already found, begin chars */
+
+                /* if !filed_ended the playing matrix is finisced and begins the scores one */
+                if (!field_ended) {
+                    (*field)[row][column] = current_char;
+                } else {
+                    (*scores)[row][column] = current_char;
                 }
-                if (end_line % (*dim) == 0) { /* % 4 before change */
+                column++;
+
+                /* columns go form 0 to dim-1*/
+                column = column % (*dim);
+                if (column % *dim == 0) {
                     /* line ended */
                     row++;
                     /* rows go from 0 to dim-1 */
@@ -57,14 +54,11 @@ int parse_schema(char *schema_path, int *dim, char ***field, char ***scores) {
                 }
                 /* the matrix are sqared (same rows and cols),
                  so when end_line reach dim*dim the first matrix is finisced */
-                if (end_line == (*dim) * (*dim)) {
+                if (end_line == ((*dim) * (*dim)) - 1) {
                     /* field ended, begin setting (scores) */
                     field_ended = 1;
                 }
                 end_line++;
-                
-                /* i'm not anymore in the first cycle */
-                i++;
             }
         }
         /* close the file */
@@ -92,15 +86,14 @@ int loop_dictionary(char *path, char *output, char **field, char **scores, int d
             /* upcase current word */
             upcase(cword);
             /* check if it's present */
-            present = find_all(field, scores, cword, dim, &(*moves));
-            
+            present = find_all(field, scores, cword, dim, moves,NULL);
             if (present) {
                 /* since the current word is present in the matrix, save it in the output file */
-                save_on_file(output, *moves, scores);
+                save_on_file(output, *moves);
             }
-            
+
             /* clean the moves list*/
-            free_list(*moves);
+            /*free_list(*moves); */
             *moves = NULL;
         }
     /* close the output file to prevent errors */
